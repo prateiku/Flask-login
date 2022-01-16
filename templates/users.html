@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title%} {{ title }} {% endblock %}
+{% block content%}
+<html>
+    <body>
+<div class="container py-4 text-center">
+    <div class="row mt-4">
+        <div class="col-lg-5 col-md-6 m-auto card p-4">
+        {% if current_user.is_authenticated %}
+        <h1>Welcome {{ current_user.username }}👋</h1>
+        <div class="table-responsive">
+            <table class="table table-sm table-dark">
+                <thead class="thead-dark">
+                    <tr class="table-primary">
+                        <th>No.</th>
+                        <th>Username</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for idds in ids.items %}
+                    <tr>
+                        <th scope="row"><img src="\static\{{idds.data}}" style="border-radius: 50%;" title="{{ idds.description }}" alt="{{idds.description}}" height="40" width="40"></th>
+                        <td>{{ idds.username }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if ids.has_prev %}<a href="{{ url_for('users', page=ids.prev_num) }}" class="btn btn-outline-primary" role="button">&lt;&lt; Load previous 5 users</a>{% endif %}
+        {% if ids.has_next %}<a href="{{ url_for('users', page=ids.next_num) }}" class="btn btn-outline-primary" role="button">Load next 5 users &gt;&gt;</a>{% endif %}
+        <div>
+            <img src="\static\{{current_user.data}}" style="border-radius: 50%;" title="{{ current_user.description }}" alt="{{current_user.description}}" height="200" width="200">
+            <h3>Description</h3>
+            <textarea readonly>{{ current_user.description }}</textarea>
+    </div>
+    </div>
+</div>
+    <div class="row mt-4">
+        <div class="col-lg-5 col-md-6 m-auto card p-4">
+            {{ form.csrf_token }}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+                <form method=post id="status" enctype=multipart/form-data>
+                    <input type=file name=file accept=".jpg, .png, .jpeg">
+                    <h4>&nbsp;</h4>
+                    <textarea placeholder="Description of Image" id="status" name="text"></textarea>
+                    <h5>&nbsp;</h5>
+                    <input type=submit value=Update class="btn btn-outline-primary">
+                </form>
+        </div>
+    </div>
+    <h3>&nbsp;</h3>
+    <a href="{{url_for('logout')}}" class="btn btn-outline-primary" role="button">Logout</a>
+
+    {% else %}
+    <h1>Login to access</h1>
+    <a href="{{url_for('login')}}" class="btn btn-outline-primary" role="button">Sign in/Sign Up</a>
+    {% endif %}
+</div>
+</body>
+</html>
+{% endblock %}
